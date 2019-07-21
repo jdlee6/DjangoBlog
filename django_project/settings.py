@@ -32,7 +32,9 @@ ALLOWED_HOSTS = []
 
 # Get comfortable adding new applications to this list any time you create an application  
 INSTALLED_APPS = [
+    'users.apps.UsersConfig',
     'blog.apps.BlogConfig',
+    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -120,3 +122,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# this says that we want to use bootstrap4 for our css template
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
