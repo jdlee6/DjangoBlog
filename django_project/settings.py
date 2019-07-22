@@ -125,3 +125,9 @@ STATIC_URL = '/static/'
 
 # this says that we want to use bootstrap4 for our css template
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# set the redirect url to blog-home which is the name of the pattern we gave to our blog homepage
+LOGIN_REDIRECT_URL = 'blog-home'
+
+# set the login url to 'login' which is the name of the pattern we gave to our login page
+LOGIN_URL = 'login'
