@@ -123,11 +123,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# this says that we want to use bootstrap4 for our css template
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-# set the redirect url to blog-home which is the name of the pattern we gave to our blog homepage
-LOGIN_REDIRECT_URL = 'blog-home'
+# MEDIA_ROOT is the full path to the directory where we'd like django to store the uploaded files
+# for performance reasons, those files are stored in the filesystem and NOT in the database
+# MEDIA_ROOT will be at our project's base directory within a directory called media
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL is the public url of that directory (how we will access our media through the browser)
+MEDIA_URL = '/media/'
 
-# set the login url to 'login' which is the name of the pattern we gave to our login page
+LOGIN_REDIRECT_URL = 'blog-home'
 LOGIN_URL = 'login'
