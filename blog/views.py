@@ -1,10 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Post
-# import ListView (showing blog posts on home page)
-# import DetailView (details of a single post object)
-# import CreateView (creating a post)
-# import UpdateView (updating a post)
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.views.generic import (
     ListView, 
     DetailView, 
@@ -20,12 +17,28 @@ def home(request):
     }
     return render(request, 'blog/home.html', context)
 
-# class based view handle a lot more logic (different kinds: list views, detail views, create views, update views, delete views and etc.)
+# home page
 class PostListView(ListView):
     model = Post
-    template_name = 'blog/home.html'
+    template_name = 'blog/home.html'    # <app>/<model>_<viewtype>.html
     context_object_name = 'posts'
     ordering =['-date_posted']
+    # displays how many posts per page
+    paginate_by = 5
+
+# user post page
+class UserPostListView(ListView):
+    model = Post
+    template_name = 'blog/user_posts.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    # override get_queryset() modify the query set that ListView returns
+    def get_queryset(self):
+        # gets object from User model & user that we want to get is a user with a username from the url
+        # if user exists then we will capture that user variable if not it will return a 404
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return Post.objects.filter(author=user).order_by('-date_posted')
 
 
 class PostDetailView(DetailView):
@@ -34,13 +47,10 @@ class PostDetailView(DetailView):
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    # fields we want when we create a post
     fields = ['title', 'content']
 
     def form_valid(self, form):
-        # before you submit the form, take that instance and set the author equal to the current logged in user
         form.instance.author = self.request.user
-        # then run the form_valid(form) method on our parent class
         return super().form_valid(form)
 
 
@@ -52,11 +62,8 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-    # create a function that our UserPassesTestMixin will run in order to see if our user passes the test condition
     def test_func(self):
-        # get the post with get_object() method
         post = self.get_object()
-        # if current logged in user is the author of the post
         if self.request.user == post.author:
             return True
         return False
@@ -64,7 +71,6 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    # success url set to the homepage
     success_url = '/'
 
     def test_func(self):
