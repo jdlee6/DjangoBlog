@@ -28,6 +28,22 @@ urlpatterns = [
     path('profile/', user_views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+    # password reset route
+    path('password-reset/', 
+            auth_views.PasswordResetView.as_view(template_name='users/password_reset.html'), 
+            name='password_reset'),
+    # page after password reset route when password reset form is submitted successfully
+    path('password-reset/done/', 
+            auth_views.PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'), 
+            name='password_reset_done'),
+    # password-reset-confirm route that takes the uidb64 and token url parameters
+    path('password-reset-confirm/<uidb64>/<token>/', 
+            auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'), 
+            name='password_reset_confirm'),
+    # password-reset-complete route
+    path('password-reset-complete/', 
+            auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
+            name='password_reset_complete'),
 ]
 
 # settings is imported; if settings is in DEBUG mode, add these url patterns
